@@ -1193,6 +1193,7 @@ const (
 	resume
 	hold
 	release
+	terminate
 )
 
 func (job *Job) modify(operation modop) error {
@@ -1208,6 +1209,8 @@ func (job *Job) modify(operation modop) error {
 		ret = C.drmaa2_j_hold(cjob)
 	case release:
 		ret = C.drmaa2_j_release(cjob)
+	case terminate:
+		ret = C.drmaa2_j_terminate(cjob)
 	}
 	defer C.drmaa2_j_free(&cjob)
 	if ret != C.DRMAA2_SUCCESS {
@@ -1238,6 +1241,11 @@ func (job *Job) Hold() error {
 // be schedulable.
 func (job *Job) Release() error {
 	return job.modify(release)
+}
+
+// Terminate tells the resource manager to kill the job.
+func (job *Job) Terminate() error {
+	return job.modify(terminate)
 }
 
 // Blocking wait until the job is started. The timeout
