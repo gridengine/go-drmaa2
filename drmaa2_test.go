@@ -55,7 +55,6 @@ func TestMonitoringSessionGetAllMachines(t *testing.T) {
 			}
 		}
 	}
-
 	return
 }
 

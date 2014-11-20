@@ -1398,7 +1398,7 @@ func createMachineList(ml C.drmaa2_list) []Machine {
 	return machines
 }
 
-// Returns a slice of jobs currently visible in the monitoring session.
+// GetAllJobs returns a slice of jobs currently visible in the monitoring session.
 // The JobInfo parameter specifies a filter for the job. For instance 
 // when a certain job number is set in the JobInfo object, then 
 func (ms *MonitoringSession) GetAllJobs(ji *JobInfo) (jobs []Job, err error) {
@@ -1420,11 +1420,18 @@ func (ms *MonitoringSession) GetAllJobs(ji *JobInfo) (jobs []Job, err error) {
 	return jl, nil
 }
 
-// Returns all queues configured in the cluster in case the argument is
+// GetlAllQueues returns all queues configured in the cluster in case the argument is
 // nil. Otherwise as subset of the queues which matches the given names
 // is returned.
 func (ms *MonitoringSession) GetAllQueues(names []string) (queues []Queue, err error) {
-	cqlist := (C.drmaa2_list)(C.drmaa2_msession_get_all_queues(ms.ms, C.drmaa2_string_list(convertGoListToC(names))))
+	var arg C.drmaa2_string_list
+	if names == nil {
+		arg = nil
+	} else {
+		arg = C.drmaa2_string_list(convertGoListToC(names))
+	}
+
+	cqlist := (C.drmaa2_list)(C.drmaa2_msession_get_all_queues(ms.ms, arg))
 	if cqlist == nil {
 		return nil, makeLastError()
 	}
@@ -1433,7 +1440,7 @@ func (ms *MonitoringSession) GetAllQueues(names []string) (queues []Queue, err e
 	return ql, nil
 }
 
-// Returns a list of all machines configured in cluster if the argument
+// GetAllMachines returns a list of all machines configured in cluster if the argument
 // is nil. Otherwise a list of available machines which matches the 
 // given names is returned.
 func (ms *MonitoringSession) GetAllMachines(names []string) (machines []Machine, err error) {
@@ -1472,7 +1479,7 @@ func (sm *SessionManager) OpenJobSession(sessionName string) (js *JobSession, er
 	return js, nil
 }
 
-// Opens an existing ReservationSession by name.
+// OpenReservationSession opens an existing ReservationSession by name.
 func (sm *SessionManager) OpenReservationSession(name string) (rs ReservationSession, err error) {
 	return rs, nil
 }
