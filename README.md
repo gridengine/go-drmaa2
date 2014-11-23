@@ -7,21 +7,20 @@ DRMAA2 Go (#golang) API for job submission, job workflow management, and HPC clu
 ## Installation
 
 1. Download / Install Univa Grid Engine (see http://www.univa.com)
+   Univa Grid Engine is currently the only cluster scheduler which supports
+   the DRMAA2 standard. A quick guide to get it installed you can find in 
+   my blog article: 
+   http://www.gridengine.eu/index.php/grid-engine-internals/209-installing-a-univa-grid-engine-demo-cluster-with-one-command-2014-07-13
 
-Univa Grid Engine is currently the only cluster scheduler which supports
-the DRMAA2 standard. A quick guide to get it installed you can find in 
-my blog article: 
-http://www.gridengine.eu/index.php/grid-engine-internals/209-installing-a-univa-grid-engine-demo-cluster-with-one-command-2014-07-13
-
-Note that Univa Grid Engine is commercial.
+   Note that Univa Grid Engine is commercial.
 
 2. Be sure that you have Grid Engine in your path (i.e. $SGE_ROOT is set)
 
-You can test this by calling qhost / qstat / .....
-Usually this is done by calling
+   You can test this by calling qhost / qstat / .....
+   Usually this is done by calling
     source /path/where/grid/engine/is/installed/default/common/settings.sh
 
-Note that "default" is the CELL directory which can be different to "default".
+   Note that "default" is the CELL directory which can be different to "default".
 
 3. Clone the project with *git* tools in your go source path (github.com/dgruber/drmaa2).
 
