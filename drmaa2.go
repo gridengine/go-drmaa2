@@ -929,9 +929,10 @@ func convertCStringListToGo(cl C.drmaa2_string_list) []string {
 	return list
 }
 
+// conertGoListToC converts a Go list into the C DRMAA2 counterpart
+// which needs to be freed by the caller
 func convertGoListToC(list interface{}) C.drmaa2_list {
 	var l C.drmaa2_list
-
 	switch list.(type) {
 	case []Job:
 		tlist := []Job(list.([]Job))
@@ -949,11 +950,6 @@ func convertGoListToC(list interface{}) C.drmaa2_list {
 		// unexpected type
 		log.Fatal("convertGoListToC: unexpected type")
 	}
-
-	// log.Print("now looping over all elements")
-	//	for e := range []interface{}(list.([]interface{})) {
-	//		C.drmaa2_list_add(l, convertListElement(e))
-	//	}
 	return l
 }
 
@@ -1155,13 +1151,12 @@ func (job *Job) GetJobTemplate() (*JobTemplate, error) {
 	return nil, makeLastError()
 }
 
-// Returns the current JobState of the job.
+// GetState returns the current state of the job.
 func (job *Job) GetState() JobState {
-	cjob := convertGoJobToC(*job)
-	defer C.drmaa2_j_free(&cjob)
-	// TODO substate
-	cstate := C.drmaa2_j_get_state(cjob, nil)
-	return jobStateMap[cstate]
+	if ji, err := job.GetJobInfo(); err != nil {
+		return ji.State
+	}
+	return Undetermined
 }
 
 // Creates a JobInfo object from the job containing
@@ -1472,11 +1467,12 @@ func (ms *MonitoringSession) GetAllReservations() (reservations []Reservation, e
 	return nil, nil
 }
 
-func (sm *SessionManager) OpenJobSession(sessionName string) (js *JobSession, err error) {
+func (sm *SessionManager) OpenJobSession(sessionName string) (*JobSession, error) {
 	// convert parameters
 	name := C.CString(sessionName)
 	defer C.free(unsafe.Pointer(name))
 	// DRMAA2 C API call
+	var js JobSession
 	js.js = C.drmaa2_open_jsession(name)
 	// convert error back to Go
 	if js.js == nil {
@@ -1484,7 +1480,7 @@ func (sm *SessionManager) OpenJobSession(sessionName string) (js *JobSession, er
 		return nil, makeLastError()
 	}
 	// job session needs to be freed from caller
-	return js, nil
+	return &js, nil
 }
 
 // OpenReservationSession opens an existing ReservationSession by name.
