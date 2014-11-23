@@ -1463,10 +1463,13 @@ func (ms *MonitoringSession) GetAllMachines(names []string) (machines []Machine,
 }
 
 func (ms *MonitoringSession) GetAllReservations() (reservations []Reservation, err error) {
-	// TODO implement - optional function by the DRMAA2 standard
+	// TODO implement - optional function  (according to DRMAA2 standard)
 	return nil, nil
 }
 
+// OpenJobSession opens an existing DRMAA2 job sesssion. In Univa Grid Engine
+// this job session is persistently stored in the Grid Engine master process.
+// The sessionName needs to be != "".
 func (sm *SessionManager) OpenJobSession(sessionName string) (*JobSession, error) {
 	// convert parameters
 	name := C.CString(sessionName)
