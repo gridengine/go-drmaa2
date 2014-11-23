@@ -34,3 +34,6 @@ webserver hosting the cluster status information.
 
 https://github.com/dgruber/drmaa2_web_app
 
+## Documentation
+
+https://godoc.org/github.com/dgruber/drmaa2
