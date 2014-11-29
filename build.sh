@@ -7,5 +7,6 @@
 export CGO_LDFLAGS="-L$SGE_ROOT/lib/lx-amd64/"
 export CGO_CFLAGS="-I$SGE_ROOT/include"
 
+go build -a
 go install 
 
